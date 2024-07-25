@@ -1,0 +1,143 @@
+#toolbar_booking_availability.wpbc_ajx_toolbar {
+    margin: 0
+  }
+  .wpbc_ajx_avy__container {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+    margin: 20px 0 0
+  }
+  .wpbc_ajx_avy__container .wpbc_ajx_avy__section_left {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: row wrap;
+    flex-flow: row wrap;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -ms-flex-align: start;
+    align-items: flex-start
+  }
+  .wpbc_ajx_avy__calendar {
+    width: 100%;
+    max-width: 100%;
+    margin: 0
+  }
+  .wpbc_ajx_avy__container .wpbc_ajx_avy__section_right {
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    margin: 0 0 0 30px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: column wrap;
+    flex-flow: column wrap;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -ms-flex-align: start;
+    align-items: flex-start
+  }
+  .wpbc_widgets {
+    width: 200px;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: column wrap;
+    flex-flow: column wrap;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -ms-flex-align: start;
+    align-items: flex-start
+  }
+  .wpbc_widgets .wpbc_widget {
+    margin: 0 0 20px;
+    width: 100%;
+    -ms-flex: 1 1 100%;
+    flex: 1 1 100%
+  }
+  .wpbc_widget .wpbc_widget_header {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #ccc;
+    background: #fff;
+    font-weight: 600;
+    text-shadow: none;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    -ms-flex-align: center;
+    align-items: center
+  }
+  .wpbc_widget .wpbc_widget_header .wpbc_widget_header_text {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 0 15px
+  }
+  .wpbc_widget .wpbc_widget_header .wpbc_widget_header_settings_link {
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    margin-left: auto;
+    border-left: 1px solid #ccc;
+    padding: 5px 10px;
+    color: #0e70b7;
+    display: none
+  }
+  @media (max-width:470px) {
+    .wpbc_ajx_avy__container {
+      -ms-flex-flow: row wrap;
+      flex-flow: row wrap
+    }
+    div.wpbc_ajx_avy__container .wpbc_ajx_avy__section_right {
+      margin: 30px 0
+    }
+    div.wpbc_widgets {
+      width: 100%
+    }
+    div.wpbc_widgets .wpbc_widget.wpbc_widget_available_unavailable {
+      position: fixed;
+      top: 100%;
+      z-index: 9999;
+      padding: 0 2px;
+      left: 0;
+      margin: -105px 0 0
+    }
+  }
+  #wpbc_hidden_template__select_booking_resource {
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto
+  }
+  #wpbc_toolbar_dates_hint {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    margin-left: 0
+  }
+  #wpbc_toolbar_dates_hint .ui_element .wpbc_help_text {
+    font-size: 1.1em;
+    line-height: 1.8em;
+    height: auto
+  }
+  #wpbc_toolbar_dates_hint .ui_element .wpbc_help_text * {
+    font-size: 1em
+  }
+  .wpbc_ajx_toolbar .wpbc_help_text .wpbc_toolbar_dates_hints {
+    font-size: 1.05em;
+    display: block
+  }
+  .wpbc_ajx_toolbar .wpbc_help_text .wpbc_toolbar_dates_hints span {
+    padding: 0 .2em
+  }
+  .wpbc_ajx_toolbar .wpbc_help_text .wpbc_toolbar_dates_hints span.wpbc_big_date,
+  .wpbc_ajx_toolbar .wpbc_help_text .wpbc_toolbar_dates_hints span.wpbc_big_text {
+    font-size: 1.05em;
+    font-weight: 600;
+    padding: 0 .3em
+  }
