@@ -22,6 +22,7 @@ require_once plugin_dir_path( __FILE__ ) . 'admin/settings-page.php';
 
 // Include the Guesty API class
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-calendar.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-guesty-payment.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-guesty-api.php';
 
 // Include the custom CSS

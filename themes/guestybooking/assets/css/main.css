@@ -1,109 +1,52 @@
-*, *::after, *::before {
-    margin: 0px;
-    padding: 0px;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Creates three equal-width columns */
+    gap: 20px; /* Space between grid items */
+    justify-items: center; /* Center the items within their grid areas */
+    padding: 20px; /* Padding around the grid container */
 }
 
-:root {
-    --line-height: 1.6;
-    --letter-spacing: 4px;
+.card {
+    box-shadow: 0 4px 8px 0 #d1ac6e;
+    width: 100%;
+    max-width: 357px;
+    padding-bottom: 20px;
 }
 
-.main-banner {
-    position: relative;
-    background-image: url(https://themewagon.github.io/VillaAgency/assets/images/banner-01.jpg);
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    padding: 16% 0 24px 0;
-    opacity: 0.95;
-    filter: brightness(90%);
+.card button {
+    border: none;
+    outline: 0;
+    padding: 12px;
+    color: white;
+    background-color: #d1ac6e; /* Button background color */
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+    border-radius: 10px; /* Rounded corners for the button */
+}
+
+.card-container {
+    padding-inline: 16px;
+}
+.card-container p {
+    margin-top: 10px;
+}
+
+.card-box {
+    padding-top: 16px;
+}
+
+.contents-container {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.card .card button:hover {
+    opacity: 0.7; /* Hover effect for the button */
 }
 
 .container {
     padding-inline: 250px;
 }
 
-.main-nav {
-    position: absolute;
-    top: 48px;
-    width: 100%;
-    display: flex; /* Ensure this is a flex container */
-    justify-content: space-between;
-    gap: 20px; /* Add some space between items */
-}
-
-.main-nav div {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center items vertically */
-}
-
-.main-nav p {
-    color: white;
-    margin: 5px 0; /* Add some margin for better spacing */
-}
-
-.nav-item1 {
-    font-size: 24px;
-}
-#mark1 { letter-spacing: var(--letter-spacing); }
-#mark2 { font-size: 20px; }
-
-.nav-item2 {
-    flex-direction: row !important;
-    gap : 6.4rem;
-}
-
-.contain-text {
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40%;
-    margin-inline: auto;
-    text-align: center;
-    color: white;
-}
-
-.contain-text p {
-    font-size: 17px;
-    line-height: var(--line-height);
-    margin-top: 16px;
-}
-
-.contain-text h1 {
-    letter-spacing: var(--letter-spacing);
-}
-
-.search-main-panel {
-    width: 100%;
-    background-color: #c9c5c5;
-    padding: 10px;
-}
-
-.search-box {
-    width: 25.5%;
-    height: 60px;
-    background-color: white;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.search-btn {
-    width: 21%;
-    background-color: #cc9966;
-    color: white;
-}
-
-.search-boxes {
-    display: flex;
-    justify-content: space-between;
-}
-
-.icon-size {
-    font-size: 24px; /* Adjust the size as needed */
-    color: #ff0000; /* Optional: Change the icon color */
-}

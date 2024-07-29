@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
+
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php wp_head(); ?>
 </head>
+
 <body <?php body_class(); ?>>
     <header>
         <nav class="main-banner">
@@ -24,25 +26,12 @@
                 <h1>Our Villas</h1>
                 <p>Welcome to Villa Amedee, your serene sanctuary in the heart of Penestanan Village, Ubud. Surrounded by the enchanting beauty of Bali, our charming 2-bedroom Balinese-style villa is an ideal retreat for couples, families, or friends. Its convenient location offers easy access to this world-renowned area's vibrant cultural, culinary, and wellness treasures. Discover the magical essence of Bali with us, where relaxation, personal transformation, and adventure await.</p>
             </div>
-            <?php
-                    // Output the quote form using the shortcode
-                    echo do_shortcode('[guesty_booking_quote_form]');
-                    ?>
         </nav>
-        <!-- <div class="search-main-panel">
-            <div class="container search-boxes">
-                <div class="search-box">
-                    <i class="fas fa-villa icon-size fa-location-dot"></i> Location
-                </div>
-                <div class="search-box">
-                    <i class="fas fa-villa icon-size fa-location-dot"></i> Period
-                </div>
-                <div class="search-box">
-                    <i class="fas fa-villa icon-size fa-location-dot"></i> Location
-                </div>
-                <div class="search-box search-btn">SEARCH</div>
-            </div>
-        </div> -->
+        <?php
+        // Output the quote form using the shortcode
+        echo do_shortcode('[guesty_booking_quote_form]');
+        ?>
     </header>
 </body>
+
 </html>

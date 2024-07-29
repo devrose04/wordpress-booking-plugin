@@ -6,6 +6,7 @@ class Guesty_API
     private $client_secret;
     private $base_url;
     private $access_token;
+    private $booking_list = array();
 
     public function __construct()
     {
@@ -135,7 +136,6 @@ class Guesty_API
             'data' => $data
         );
     }
-
 
     public function get_token()
     {
