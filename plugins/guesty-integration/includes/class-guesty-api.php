@@ -6,7 +6,6 @@ class Guesty_API
     private $client_secret;
     private $base_url;
     private $access_token;
-    private $booking_list = array();
 
     public function __construct()
     {
@@ -45,7 +44,6 @@ class Guesty_API
         } else {
             $token = $result_data['access_token'];
             update_option('guesty_access_token', $token);
-            $res = $token;
             return "Successfully Connected!";
         }
     }
@@ -135,6 +133,53 @@ class Guesty_API
             'message' => $response_message,
             'data' => $data
         );
+    }
+
+    public function payment_provider($listingId, $card, $billing_details, $threeDS)
+    {
+        $api_url = 'https://pay.guesty.com/api/tokenize/v2';
+        $response = wp_remote_post($api_url, array(
+            'headers' => $this->get_headers(),
+            'body' => json_encode(array(
+                'listingId' => $listingId,
+                'card' => array(
+                    'number' => $card['number'],
+                    'exp_month' => $card['exp_month'],
+                    'exp_year' => $card['exp_year'],
+                    'cvc' => $card['cvc'],
+                ),
+                'billing_details' => array(
+                    'name' => $billing_details['name'],
+                    'address' => array(
+                        'line1' => $billing_details['address']['line1'],
+                        'city' => $billing_details['address']['city'],
+                        'postal_code' => $billing_details['address']['postal_code'],
+                        'country' => $billing_details['address']['country']
+                    )
+                ),
+                'threeDS' => array(
+                    'amount' => $threeDS['amount'],
+                    'currency' => $threeDS['currency'],
+                    "successURL" => "https://book.pms.com",
+                    "failureURL" => "https://discord.com"
+                )
+            ))
+        ));
+        if (is_wp_error($response)) {
+            return false; // Handle errors accordingly
+        }
+
+        $body = wp_remote_retrieve_body($response);
+        $data = json_decode($body, true);
+
+        // Debugging: Output the data to error log
+        error_log(print_r($data, true));
+
+        return $data;
+    }
+
+    public function guesty_pay($providerid, $listingid, $card, $detail, $threeDS)
+    {
     }
 
     public function get_token()

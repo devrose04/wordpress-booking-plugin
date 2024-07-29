@@ -146,7 +146,8 @@ function guesty_options_page()
         $guesty_api = new Guesty_API();
         $response = $guesty_api->test_connection();
         echo '<div class="notice notice-success is-dismissible"><p>Connection status: ' . esc_html($response) . '</p></div>';
-        // var_dump($guesty_api->get_token());
+        // Set the token as a cookie
+
     } else if (isset($_POST['guesty_client_id'])) {
         $encrypted_client_id = $_POST['guesty_client_id'];
         $encrypted_client_secret = $_POST['guesty_client_secret'];
@@ -614,7 +615,7 @@ function guesty_reservation_quote()
     $checkout = get_option('res_checkout');
     $guests = get_option('res_guests');
     $range = get_option('res_range');
-    
+
     $guesty_api = new Guesty_API;
     if (empty($list_data)) {
     ?><script>
@@ -637,7 +638,7 @@ function guesty_reservation_quote()
             $invoice = $result['data']['rates']['ratePlans'][0]['ratePlan']['money']['invoiceItems'][0];
         ?>
             <div class="card">
-                <input type="hidden" id="<?php echo $id; ?>" name="<?php echo $id; ?>" value="<?php echo $id; ?>">
+                <input type="hidden" id="<?php echo $idx; ?>" name="<?php echo $idx; ?>" value="<?php echo $id; ?>">
                 <input type="hidden" id="nickname<?php echo $idx; ?>" name="nickname<?php echo $idx; ?>" value="<?php echo $data['nickname']; ?>">
                 <input type="hidden" id="range<?php echo $idx; ?>" name="range<?php echo $idx; ?>" value="<?php echo $range; ?>">
                 <input type="hidden" id="guests<?php echo $idx; ?>" name="guests<?php echo $idx; ?>" value="<?php echo $guests; ?>">
@@ -665,6 +666,7 @@ function guesty_reservation_quote()
     echo "</div>"; ?>
     <script>
         function newBook(idx) {
+            var listingid = document.getElementById(idx).value;
             var amount = document.getElementById("amount" + idx).value;
             var nickname = document.getElementById("nickname" + idx).value;
             var range = document.getElementById("range" + idx).value;
@@ -674,6 +676,7 @@ function guesty_reservation_quote()
             document.getElementById("modal-nickname").textContent = nickname;
             document.getElementById("modal-range").textContent = range;
             document.getElementById("modal-guests").textContent = guests;
+            document.getElementById("listingid").value = listingid;
 
             var modal = document.getElementById("successModal");
             modal.style.display = "block";
@@ -685,6 +688,7 @@ function guesty_reservation_quote()
         }
     </script>
     <div id="successModal" class="modal">
+        <input type="hidden" id="listingid" value="">
         <div class="modal-content">
             <div id="modal-message">
                 <div class="modal-header">
@@ -707,7 +711,12 @@ function guesty_reservation_quote()
     <script type="text/javascript">
         document.getElementById('pay-check').addEventListener('submit', function(e) {
             e.preventDefault();
-            window.location.href = '<?php echo get_template_directory_uri(); ?>/payment.php';
+            var listingid = document.getElementById("listingid").value;
+            var amount = document.getElementById("modal-amount").textContent;
+            var paymentUrl = '<?php echo home_url(); ?>/payment';
+            var redirectUrl = paymentUrl + '?listingid=' + encodeURIComponent(listingid) + '&amount=' + encodeURIComponent(amount);
+
+            window.location.href = redirectUrl;
         });
     </script>
 <?php
@@ -738,9 +747,11 @@ function guesty_booking_quote_form_styles()
             background-color: #5CB85C;
             color: white;
         }
+
         .pay-cancel {
             background-color: red !important;
         }
+
         .pay-cancel:hover {
             cursor: pointer;
             background-color: darkred !important;
@@ -748,7 +759,7 @@ function guesty_booking_quote_form_styles()
 
         .pay-check:hover {
             cursor: pointer;
-            background-color: #3d8b3d;
+            background-color: #3d8b3d !important;
         }
 
         .pay-cancel {
