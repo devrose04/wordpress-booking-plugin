@@ -1,1 +1,0 @@
-# wordpress-booking-plugin

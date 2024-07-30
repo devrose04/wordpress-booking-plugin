@@ -106,16 +106,16 @@
     }
 </style>
 <?php
-$firstName   = isset($_POST['firstName']) ? $_POST['firstName'] : "";
-$lastName    = isset($_POST['lastName']) ? $_POST['lastName'] : "";
-$creditCard  = isset($_POST['creditCard']) ? $_POST['creditCard'] : "";
-$expiration  = isset($_POST['expiration']) ? $_POST['expiration'] : "";
-$cvc         = isset($_POST['cvc']) ? $_POST['cvc'] : "";
-$street      = isset($_POST['street']) ? $_POST['street'] : "";
-$city        = isset($_POST['city']) ? $_POST['city'] : "";
-$country     = isset($_POST['country']) ? $_POST['country'] : "";
-$state       = isset($_POST['state']) ? $_POST['state'] : "";
-$zipcode     = isset($_POST['zipcode']) ? $_POST['zipcode'] : "";
+$firstName  = isset($_POST['firstName']) ? $_POST['firstName'] : "";
+$lastName   = isset($_POST['lastName']) ? $_POST['lastName'] : "";
+$creditCard = isset($_POST['creditCard']) ? $_POST['creditCard'] : "";
+$expiration = isset($_POST['expiration']) ? $_POST['expiration'] : "";
+$cvc        = isset($_POST['cvc']) ? $_POST['cvc'] : "";
+$street     = isset($_POST['street']) ? $_POST['street'] : "";
+$city       = isset($_POST['city']) ? $_POST['city'] : "";
+$country    = isset($_POST['country']) ? $_POST['country'] : "";
+$state      = isset($_POST['state']) ? $_POST['state'] : "";
+$zipcode    = isset($_POST['zipcode']) ? $_POST['zipcode'] : "";
 ?>
 
 <body>
@@ -184,6 +184,8 @@ $zipcode     = isset($_POST['zipcode']) ? $_POST['zipcode'] : "";
             <button class="canceled">Go to Back</button>
         </div>
     </form>
+    <input type="hidden" id="provider" value="<?php echo $paymentProviderId; ?>">
+    <div id="guesty-tokenization-container"></div>
     <?php
     $price = isset($_GET['amount']) ? $_GET['amount'] : null;
     $listingId = isset($_GET['listingid']) ? $_GET['listingid'] : null;
@@ -194,7 +196,7 @@ $zipcode     = isset($_POST['zipcode']) ? $_POST['zipcode'] : "";
     }
 
     $payment = new Guesty_API();
-    // $paymentProviderId = $payment->payment_provider($listingId)["providerAccountId"];
+    $paymentProviderId = $payment->pay_provider($listingId)["providerAccountId"];
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $exp = new DateTime($_POST['expiration']);
         $number = preg_replace('/\D/', '', $_POST['creditCard']);
@@ -238,7 +240,48 @@ $zipcode     = isset($_POST['zipcode']) ? $_POST['zipcode'] : "";
 
 </html>
 
-<script>
+<script type="module">
+    import {
+        loadScript
+    } from "@guestyorg/tokenization-js";
+
+    document.addEventListener("DOMContentLoaded", async function() {
+        const containerId = "guesty-tokenization-container";
+        const providerId = document.getElementById("provider").value; // Replace with your actual provider ID
+        alert(providerId);
+
+        try {
+            // Load the Guesty Tokenization SDK
+            const guestyTokenization = await loadScript();
+            console.log("Guesty Tokenization JS SDK is loaded and ready to use");
+
+            // Render the tokenization form
+            await guestyTokenization.render({
+                containerId: containerId,
+                providerId: providerId,
+            });
+            console.log("Guesty Tokenization form rendered successfully");
+
+            // Handle form submission
+            document
+                .getElementById("pay-now")
+                .addEventListener("click", async function() {
+                    try {
+                        const paymentMethod = await guestyTokenization.submit();
+                        console.log("Payment method received:", paymentMethod);
+                        // Process payment method via Guesty's API
+                    } catch (e) {
+                        console.error("Failed to submit the Guesty Tokenization form", e);
+                    }
+                });
+        } catch (error) {
+            console.error(
+                "Failed to load the Guesty Tokenization JS SDK script",
+                error
+            );
+        }
+    });
+
     function formatCreditCard(input) {
         const value = input.value.replace(/\D/g, ''); // Remove all non-digit characters
         const formattedValue = value.match(/.{1,4}/g)?.join('-') ?? value; // Group digits in sets of 4

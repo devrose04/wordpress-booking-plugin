@@ -322,6 +322,7 @@ function get_detail_list()
     </div>
 <?php
 }
+add_shortcode("get_detail_list", "get_detail_list");
 
 // Calendar
 function get_calendar_page()
@@ -531,10 +532,10 @@ function guesty_booking_quote_form()
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px">
                     <path d="M16.5 6a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0M18 6A6 6 0 1 0 6 6a6 6 0 0 0 12 0M3 23.25a9 9 0 1 1 18 0 .75.75 0 0 0 1.5 0c0-5.799-4.701-10.5-10.5-10.5S1.5 17.451 1.5 23.25a.75.75 0 0 0 1.5 0"></path>
                 </svg>
-                <input type="text" value="<?php echo $guests; ?> Accommodates | <?php echo $bedrooms; ?> Bedrooms" placeholder="Accommodates | Bedrooms" name="guests" id="guests" onclick="displayCount()" required>
+                <input type="text" value="<?php echo $guests; ?> Guests | <?php echo $bedrooms; ?> Bedrooms" placeholder="Guests | Bedrooms" name="guests" id="guests" onclick="displayCount()" required>
                 <div id="guests-popup" class="guests-popup">
                     <label>
-                        <p style="width: 50%;"><?php echo "Accommodates: " ?></p>
+                        <p style="width: 50%;"><?php echo "Guests: " ?></p>
                         <button type="button" class="decrement-btn" onclick="updateValue('accommodates', -1)">-</button>
                         <input type="text" name="accommodates" id="accommodates" min="1" value="1" readonly>
                         <button type="button" class="increment-btn" onclick="updateValue('accommodates', 1)">+</button>
@@ -563,6 +564,7 @@ function guesty_booking_quote_form()
     $checkout = "none";
     if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['id'])) {
         // Sanitize and process the form data
+
         $location = $streets[sanitize_text_field($_POST['location'])];
         $range = sanitize_text_field($_POST['daterange']);
         $guests = sanitize_text_field($_POST['accommodates']);
@@ -618,245 +620,255 @@ function guesty_reservation_quote()
 
     $guesty_api = new Guesty_API;
     if (empty($list_data)) {
+        if ($checkin !== 'none') {
     ?><script>
-            var modal = document.getElementById("failedModal");
-            modal.style.display = "block";
+                var modal = document.getElementById("failedModal");
+                modal.style.display = "block";
 
-            function failedModal() {
+                function failedModal() {
+                    modal.style.display = "none";
+                }
+                <?php } ?>
+            </script>
+            <div class="no-data-message"><svg height="24px" viewBox="0 0 1792 1792" width="24px" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M896 768q237 0 443-43t325-127v170q0 69-103 128t-280 93.5-385 34.5-385-34.5-280-93.5-103-128v-170q119 84 325 127t443 43zm0 768q237 0 443-43t325-127v170q0 69-103 128t-280 93.5-385 34.5-385-34.5-280-93.5-103-128v-170q119 84 325 127t443 43zm0-384q237 0 443-43t325-127v170q0 69-103 128t-280 93.5-385 34.5-385-34.5-280-93.5-103-128v-170q119 84 325 127t443 43zm0-1152q208 0 385 34.5t280 93.5 103 128v128q0 69-103 128t-280 93.5-385 34.5-385-34.5-280-93.5-103-128v-128q0-69 103-128t280-93.5 385-34.5z" />
+                </svg> No Data Found</div>
+            <?php
+        } else {
+            echo '<div class="cards-container container">';
+            foreach ($list_data as $idx => $id) {
+                $data = $guesty_api->fetch_guesty_detail_data($id);
+                $result = $guesty_api->new_booking_data($id, $checkin, $checkout, $guests);
+                $invoice = $result['data']['rates']['ratePlans'][0]['ratePlan']['money']['invoiceItems'][0];
+            ?>
+                <div class="card">
+                    <input type="hidden" id="<?php echo $idx; ?>" name="<?php echo $idx; ?>" value="<?php echo $id; ?>">
+                    <input type="hidden" id="nickname<?php echo $idx; ?>" name="nickname<?php echo $idx; ?>" value="<?php echo $data['nickname']; ?>">
+                    <input type="hidden" id="range<?php echo $idx; ?>" name="range<?php echo $idx; ?>" value="<?php echo $range; ?>">
+                    <input type="hidden" id="guests<?php echo $idx; ?>" name="guests<?php echo $idx; ?>" value="<?php echo $guests; ?>">
+                    <input type="hidden" id="amount<?php echo $idx; ?>" name="amount<?php echo $idx; ?>" value="<?php echo $invoice['amount'] . ' ' . $invoice['currency']; ?>">
+
+                    <img src="<?php echo $data['picture']['thumbnail']; ?>" alt="Denim Jeans" style="width:100%">
+                    <div class="card-container card-box">
+                        <h2><?php echo $data['nickname']; ?></h2>
+                        <div class="contents-container">
+                            <p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px">
+                                    <path d="M15 8.25a3 3 0 1 1-6 0 3 3 0 0 1 6 0m1.5 0a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0M12 1.5a6.75 6.75 0 0 1 6.75 6.75c0 2.537-3.537 9.406-6.75 14.25-3.214-4.844-6.75-11.713-6.75-14.25A6.75 6.75 0 0 1 12 1.5M12 0a8.25 8.25 0 0 0-8.25 8.25c0 2.965 3.594 9.945 7 15.08a1.5 1.5 0 0 0 2.5 0c3.406-5.135 7-12.115 7-15.08A8.25 8.25 0 0 0 12 0"></path>
+                                </svg><?php echo "  " . $data['address']['street']; ?></p>
+                            <p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px">
+                                    <path d="M4 10V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v3h1a1 1 0 0 1 1 1v10h-2v-3H5v3H3V11a1 1 0 0 1 1-1h1zm2-3v3h12V7a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm-2 7h16v-2H4v2z"></path>
+                                </svg><?php echo "  " . $data['bedrooms']; ?></p>
+                            <p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px">
+                                    <path d="M2 20.914v1.586h1.586l4.442-4.442-1.586-1.586L2 20.914zM23.707 7.707l-2.414-2.414a1 1 0 0 0-1.414 0L7 17.172V21h3.828l12.293-12.293a1 1 0 0 0 0-1.414zM20 4.914l2.086 2.086-1.085 1.086L18.914 6 20 4.914z"></path>
+                                </svg><?php echo "  " . $data['prices']['basePrice'] . " " . $data['prices']['currency']; ?></p>
+                        </div>
+                    </div>
+                    <p class="card-container"><button onclick="newBook(<?php echo $idx; ?>)">Book</button></p>
+                </div>
+        <?php }
+        }
+        echo "</div>"; ?>
+        <script>
+            function newBook(idx) {
+                var listingid = document.getElementById(idx).value;
+                var amount = document.getElementById("amount" + idx).value;
+                var nickname = document.getElementById("nickname" + idx).value;
+                var range = document.getElementById("range" + idx).value;
+                var guests = document.getElementById("guests" + idx).value;
+
+                document.getElementById("modal-amount").textContent = amount;
+                document.getElementById("modal-nickname").textContent = nickname;
+                document.getElementById("modal-range").textContent = range;
+                document.getElementById("modal-guests").textContent = guests;
+                document.getElementById("listingid").value = listingid;
+
+                var modal = document.getElementById("successModal");
+                modal.style.display = "block";
+            }
+
+            function closeModal() {
+                var modal = document.getElementById("successModal");
                 modal.style.display = "none";
             }
         </script>
-        <div class="no-data-message"><svg height="24px" viewBox="0 0 1792 1792" width="24px" xmlns="http://www.w3.org/2000/svg">
-                <path d="M896 768q237 0 443-43t325-127v170q0 69-103 128t-280 93.5-385 34.5-385-34.5-280-93.5-103-128v-170q119 84 325 127t443 43zm0 768q237 0 443-43t325-127v170q0 69-103 128t-280 93.5-385 34.5-385-34.5-280-93.5-103-128v-170q119 84 325 127t443 43zm0-384q237 0 443-43t325-127v170q0 69-103 128t-280 93.5-385 34.5-385-34.5-280-93.5-103-128v-170q119 84 325 127t443 43zm0-1152q208 0 385 34.5t280 93.5 103 128v128q0 69-103 128t-280 93.5-385 34.5-385-34.5-280-93.5-103-128v-128q0-69 103-128t280-93.5 385-34.5z" />
-            </svg> No Data Found</div>
-        <?php
-    } else {
-        echo '<div class="cards-container container">';
-        foreach ($list_data as $idx => $id) {
-            $data = $guesty_api->fetch_guesty_detail_data($id);
-            $result = $guesty_api->new_booking_data($id, $checkin, $checkout, $guests);
-            $invoice = $result['data']['rates']['ratePlans'][0]['ratePlan']['money']['invoiceItems'][0];
-        ?>
-            <div class="card">
-                <input type="hidden" id="<?php echo $idx; ?>" name="<?php echo $idx; ?>" value="<?php echo $id; ?>">
-                <input type="hidden" id="nickname<?php echo $idx; ?>" name="nickname<?php echo $idx; ?>" value="<?php echo $data['nickname']; ?>">
-                <input type="hidden" id="range<?php echo $idx; ?>" name="range<?php echo $idx; ?>" value="<?php echo $range; ?>">
-                <input type="hidden" id="guests<?php echo $idx; ?>" name="guests<?php echo $idx; ?>" value="<?php echo $guests; ?>">
-                <input type="hidden" id="amount<?php echo $idx; ?>" name="amount<?php echo $idx; ?>" value="<?php echo $invoice['amount'] . ' ' . $invoice['currency']; ?>">
-
-                <img src="<?php echo $data['picture']['thumbnail']; ?>" alt="Denim Jeans" style="width:100%">
-                <div class="card-container card-box">
-                    <h2><?php echo $data['nickname']; ?></h2>
-                    <div class="contents-container">
-                        <p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px">
-                                <path d="M15 8.25a3 3 0 1 1-6 0 3 3 0 0 1 6 0m1.5 0a4.5 4.5 0 1 0-9 0 4.5 4.5 0 0 0 9 0M12 1.5a6.75 6.75 0 0 1 6.75 6.75c0 2.537-3.537 9.406-6.75 14.25-3.214-4.844-6.75-11.713-6.75-14.25A6.75 6.75 0 0 1 12 1.5M12 0a8.25 8.25 0 0 0-8.25 8.25c0 2.965 3.594 9.945 7 15.08a1.5 1.5 0 0 0 2.5 0c3.406-5.135 7-12.115 7-15.08A8.25 8.25 0 0 0 12 0"></path>
-                            </svg><?php echo "  " . $data['address']['street']; ?></p>
-                        <p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px">
-                                <path d="M4 10V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v3h1a1 1 0 0 1 1 1v10h-2v-3H5v3H3V11a1 1 0 0 1 1-1h1zm2-3v3h12V7a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm-2 7h16v-2H4v2z"></path>
-                            </svg><?php echo "  " . $data['bedrooms']; ?></p>
-                        <p><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px">
-                                <path d="M2 20.914v1.586h1.586l4.442-4.442-1.586-1.586L2 20.914zM23.707 7.707l-2.414-2.414a1 1 0 0 0-1.414 0L7 17.172V21h3.828l12.293-12.293a1 1 0 0 0 0-1.414zM20 4.914l2.086 2.086-1.085 1.086L18.914 6 20 4.914z"></path>
-                            </svg><?php echo "  " . $data['prices']['basePrice'] . " " . $data['prices']['currency']; ?></p>
+        <div id="successModal" class="modal">
+            <input type="hidden" id="listingid" value="">
+            <div class="modal-content">
+                <div id="modal-message">
+                    <div class="modal-header">
+                        <span class="close" onclick="closeModal()">&times;</span>
+                        <h2>Reservation quote</h2>
+                    </div>
+                    <div class="modal-main">
+                        <p>Booked: <strong id="modal-nickname"></strong></p>
+                        <p>Range: <strong id="modal-range"></strong></p>
+                        <p>Guests: <strong id="modal-guests"></strong></p>
+                        <p>Amount: <strong id="modal-amount"></strong></p>
                     </div>
                 </div>
-                <p class="card-container"><button onclick="newBook(<?php echo $idx; ?>)">Book</button></p>
-            </div>
-    <?php }
-    }
-    echo "</div>"; ?>
-    <script>
-        function newBook(idx) {
-            var listingid = document.getElementById(idx).value;
-            var amount = document.getElementById("amount" + idx).value;
-            var nickname = document.getElementById("nickname" + idx).value;
-            var range = document.getElementById("range" + idx).value;
-            var guests = document.getElementById("guests" + idx).value;
-
-            document.getElementById("modal-amount").textContent = amount;
-            document.getElementById("modal-nickname").textContent = nickname;
-            document.getElementById("modal-range").textContent = range;
-            document.getElementById("modal-guests").textContent = guests;
-            document.getElementById("listingid").value = listingid;
-
-            var modal = document.getElementById("successModal");
-            modal.style.display = "block";
-        }
-
-        function closeModal() {
-            var modal = document.getElementById("successModal");
-            modal.style.display = "none";
-        }
-    </script>
-    <div id="successModal" class="modal">
-        <input type="hidden" id="listingid" value="">
-        <div class="modal-content">
-            <div id="modal-message">
-                <div class="modal-header">
-                    <span class="close" onclick="closeModal()">&times;</span>
-                    <h2>Reservation quote</h2>
+                <div id="payment" class="container payment">
+                    <form id="pay-check"><button type="submit" class="pay-check">Book now</button></form>
+                    <form id="detail-check"><button type="submit" class="pay-check">Detail</button></form>
+                    <button class="pay-cancel" onclick="closeModal()">Cancel</button>
                 </div>
-                <div class="modal-main">
-                    <p>Booked: <strong id="modal-nickname"></strong></p>
-                    <p>Range: <strong id="modal-range"></strong></p>
-                    <p>Guests: <strong id="modal-guests"></strong></p>
-                    <p>Amount: <strong id="modal-amount"></strong></p>
-                </div>
-            </div>
-            <div id="payment" class="container payment">
-                <form id="pay-check"><button type="submit" class="pay-check">Book now</button></form>
-                <button class="pay-cancel" onclick="closeModal()">Cancel</button>
             </div>
         </div>
-    </div>
-    <script type="text/javascript">
-        document.getElementById('pay-check').addEventListener('submit', function(e) {
-            e.preventDefault();
-            var listingid = document.getElementById("listingid").value;
-            var amount = document.getElementById("modal-amount").textContent;
-            var paymentUrl = '<?php echo home_url(); ?>/payment';
-            var redirectUrl = paymentUrl + '?listingid=' + encodeURIComponent(listingid) + '&amount=' + encodeURIComponent(amount);
-
-            window.location.href = redirectUrl;
-        });
-    </script>
-<?php
+        <script type="text/javascript">
+            document.getElementById('pay-check').addEventListener('submit', function(e) {
+                e.preventDefault();
+                var listingid = document.getElementById("listingid").value;
+                var amount = document.getElementById("modal-amount").textContent;
+                var paymentUrl = '<?php echo home_url(); ?>/payment';
+                var redirectUrl = paymentUrl + '?listingid=' + encodeURIComponent(listingid) + '&amount=' + encodeURIComponent(amount);
+                window.location.href = redirectUrl;
+            });
+            document.getElementById('detail-check').addEventListener('submit', function(e) {
+                e.preventDefault();
+                var listingid = document.getElementById("listingid").value;
+                var paymentUrl = '<?php echo home_url(); ?>/list-detail';
+                var redirectUrl = paymentUrl + '?id=' + encodeURIComponent(listingid);
+                window.location.href = redirectUrl;
+            });
+        </script>
+    <?php
 }
 add_shortcode('guesty_reservation_quote', 'guesty_reservation_quote');
 
 // css
 function guesty_booking_quote_form_styles()
 {
-?>
-    <style>
-        .payment {
-            padding: 1rem 1rem 1rem 8rem;
-            display: flex;
-            margin-top: 12px;
-            margin-bottom: 18px;
-            gap: 16px;
-        }
-
-        .payment button {
-            padding: 8px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: large;
-        }
-
-        .pay-check {
-            background-color: #5CB85C;
-            color: white;
-        }
-
-        .pay-cancel {
-            background-color: red !important;
-        }
-
-        .pay-cancel:hover {
-            cursor: pointer;
-            background-color: darkred !important;
-        }
-
-        .pay-check:hover {
-            cursor: pointer;
-            background-color: #3d8b3d !important;
-        }
-
-        .pay-cancel {
-            background-color: #5CB85C;
-            color: white;
-        }
-
-        .no-data-message {
-            text-align: center;
-            font-size: 20px;
-            color: red;
-            margin: 50px 0;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            padding-top: 100px;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-
-        .modal-content {
-            position: relative;
-            background-color: #fefefe;
-            margin: auto;
-            padding: 0;
-            border: 1px solid #888;
-            border-radius: 10px;
-            width: 36%;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-            animation: animatetop 0.4s;
-        }
-
-        .modal-main {
-            padding: 1rem 1rem 1rem 8rem;
-            font-size: larger;
-            line-height: 32px;
-        }
-
-        @keyframes animatetop {
-            from {
-                top: -300px;
-                opacity: 0
+    ?>
+        <style>
+            .payment {
+                display: flex;
+                margin-bottom: 24px;
+                padding: inherit;
+                gap: 16px;
+                justify-content: center;
             }
 
-            to {
+            .payment button {
+                padding: 8px 24px;
+                border: none;
+                border-radius: 8px;
+                font-size: large;
+            }
+
+            .pay-check {
+                background-color: #5CB85C;
+                color: white;
+            }
+
+            .pay-cancel {
+                background-color: red !important;
+            }
+
+            .pay-cancel:hover {
+                cursor: pointer;
+                background-color: darkred !important;
+            }
+
+            .pay-check:hover {
+                cursor: pointer;
+                background-color: #3d8b3d !important;
+            }
+
+            .pay-cancel {
+                background-color: #5CB85C;
+                color: white;
+            }
+
+            .no-data-message {
+                text-align: center;
+                font-size: 20px;
+                color: red;
+                margin: 50px 0;
+            }
+
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1;
+                padding-top: 100px;
+                left: 0;
                 top: 0;
-                opacity: 1
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.4);
             }
-        }
 
-        .modal-header {
-            padding: 16px;
-            background-color: #5cb85c;
-            color: white;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
+            .modal-content {
+                position: relative;
+                background-color: #fefefe;
+                margin: auto;
+                padding: 0;
+                border: 1px solid #888;
+                border-radius: 10px;
+                width: 36%;
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                animation: animatetop 0.4s;
+            }
 
-        .modal-red {
-            background-color: red;
-        }
+            .modal-main {
+                width: 60%;
+                margin: 16px auto;
+                font-size: larger;
+                line-height: 32px;
+            }
 
-        .modal-body {
-            padding: 16px;
-        }
+            @keyframes animatetop {
+                from {
+                    top: -300px;
+                    opacity: 0
+                }
 
-        .modal-body p {
-            margin-bottom: 16px;
-        }
+                to {
+                    top: 0;
+                    opacity: 1
+                }
+            }
 
-        .modal-body p strong {
-            display: inline-block;
-            width: 100px;
-        }
+            .modal-header {
+                padding: 16px;
+                background-color: #5cb85c;
+                color: white;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+            }
 
-        .close {
-            color: white;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
+            .modal-red {
+                background-color: red;
+            }
 
-        .close:hover,
-        .close:focus {
-            color: #000;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
-<?php
+            .modal-body {
+                padding: 16px;
+            }
+
+            .modal-body p {
+                margin-bottom: 16px;
+            }
+
+            .modal-body p strong {
+                display: inline-block;
+                width: 100px;
+            }
+
+            .close {
+                color: white;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+            .close:hover,
+            .close:focus {
+                color: #000;
+                text-decoration: none;
+                cursor: pointer;
+            }
+        </style>
+    <?php
 }
 add_action('wp_head', 'guesty_booking_quote_form_styles');
 

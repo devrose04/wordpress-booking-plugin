@@ -142,27 +142,27 @@ class Guesty_API
             'headers' => $this->get_headers(),
             'body' => json_encode(array(
                 'listingId' => $listingId,
-                'card' => array(
+                'card' => json_encode(array(
                     'number' => $card['number'],
                     'exp_month' => $card['exp_month'],
                     'exp_year' => $card['exp_year'],
                     'cvc' => $card['cvc'],
-                ),
-                'billing_details' => array(
+                )),
+                'billing_details' => json_encode(array(
                     'name' => $billing_details['name'],
-                    'address' => array(
+                    'address' => json_encode(array(
                         'line1' => $billing_details['address']['line1'],
                         'city' => $billing_details['address']['city'],
                         'postal_code' => $billing_details['address']['postal_code'],
                         'country' => $billing_details['address']['country']
-                    )
-                ),
-                'threeDS' => array(
+                    ))
+                )),
+                'threeDS' => json_encode(array(
                     'amount' => $threeDS['amount'],
                     'currency' => $threeDS['currency'],
                     "successURL" => "https://book.pms.com",
                     "failureURL" => "https://discord.com"
-                )
+                ))
             ))
         ));
         if (is_wp_error($response)) {
@@ -178,8 +178,22 @@ class Guesty_API
         return $data;
     }
 
-    public function guesty_pay($providerid, $listingid, $card, $detail, $threeDS)
+    public function pay_provider($listingid)
     {
+        $api_url = $this->base_url . '/api/listings/' . $listingid . '/payment-provider';
+        // return $api_url;
+        $response = wp_remote_get($api_url, array('headers' => $this->get_headers()));
+        if (is_wp_error($response)) {
+            return false; // Handle errors accordingly
+        }
+
+        $body = wp_remote_retrieve_body($response);
+        $data = json_decode($body, true);
+
+        // Debugging: Output the data to error log
+        error_log(print_r($data, true));
+
+        return $data;
     }
 
     public function get_token()

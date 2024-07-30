@@ -15,6 +15,7 @@ function guesty_scripts() {
     wp_enqueue_style('reservatopm-header-style', get_template_directory_uri() . '/assets/css/header.css');
     wp_enqueue_style('reservatopm-main-style', get_template_directory_uri() . '/assets/css/main.css');
     wp_enqueue_style('reservatopm-quote-style', get_template_directory_uri() . '/assets/css/quote-form.css');
+    wp_enqueue_style('plugin-style-handle', plugins_url('assets/style.css', 'guesty-integration'));
 
     // Add Font Awesome
     wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
@@ -41,6 +42,20 @@ function enqueue_custom_payment_scripts() {
     );
 }
 add_action('wp_enqueue_scripts', 'enqueue_custom_payment_scripts');
+
+// functions.php
+
+function enqueue_guesty_scripts() {
+    wp_enqueue_script(
+        'guesty-tokenization-js',
+        'https://pay.guesty.com/tokenization/v1/init.js',
+        array(),
+        null,
+        true
+    );
+}
+add_action('wp_enqueue_scripts', 'enqueue_guesty_scripts');
+
 ?>
 
 
