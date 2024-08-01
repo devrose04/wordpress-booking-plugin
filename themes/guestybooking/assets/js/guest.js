@@ -15,7 +15,7 @@ function popup() {
         console.error('Guests popup element not found');
     }
     document.getElementById('guests').value =
-        document.getElementById('accommodates').value + " Accommodates | " +
+        document.getElementById('accommodates').value + " Guests | " +
         document.getElementById('bedrooms').value + " Bedrooms";
 }
 

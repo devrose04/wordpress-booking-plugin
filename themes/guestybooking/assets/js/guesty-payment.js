@@ -2,8 +2,7 @@ import { loadScript } from "@guestyorg/tokenization-js";
 
 document.addEventListener("DOMContentLoaded", async function () {
   const containerId = "guesty-tokenization-container";
-  const providerId = document.getElementById("provider").value; // Replace with your actual provider ID
-  alert(providerId);
+  const providerId = "acct_1OloHTAcnyo9ow0l"; // Replace with your actual provider ID
 
   try {
     // Load the Guesty Tokenization SDK

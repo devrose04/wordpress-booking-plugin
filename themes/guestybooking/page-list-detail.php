@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,305 +10,380 @@
 </head>
 <style>
     /* General Reset */
-*,
-*::after,
-*::before {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;</header>
-}
+    *,
+    *::after,
+    *::before {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        </header>
+    }
 
-/* General Paragraph Styling */
+    /* General Paragraph Styling */
 
-h1 {
-    margin-bottom: 20px !important;
-    padding: 16px 24px 20px;
-}
+    h1 {
+        margin-bottom: 20px !important;
+        padding: 16px 24px 20px;
+    }
 
-h3 {
-    margin: 12px;
-}
+    h3 {
+        margin: 12px;
+    }
 
-p {
-    font-size: 20px;
-    padding: 4px;
-}
+    p {
+        font-size: 20px;
+        padding: 4px;
+    }
 
-.dsp p {
-    padding: 12px !important;
-}
+    .dsp p {
+        padding: 12px !important;
+    }
 
-/* Container Styling */
-.container {
-    padding-inline: 120px;
-    margin-bottom: 20px; /* Optional: Add bottom margin to space out sections */
-}
-.sm-container {
-    margin-inline: auto;
-}
+    /* Container Styling */
+    .container {
+        padding-inline: 120px;
+        margin-bottom: 20px;
+        /* Optional: Add bottom margin to space out sections */
+    }
 
-.top-margin {
-    margin-top: 50px;
-}
+    .sm-container {
+        margin-inline: auto;
+    }
 
-/* Flexbox Layout */
-.display-flex {
-    display: flex;
-    align-items: center;
-}
+    .top-margin {
+        margin-top: 50px;
+    }
 
-/* Grid Layout */
-.display-grid {
-    display: grid;
-    grid-template-columns: 68% 28%;
-    gap: 20px;
-}
+    /* Flexbox Layout */
+    .display-flex {
+        display: flex;
+        align-items: center;
+    }
 
-.dsp-title {
-    margin-top: 40px;
-}
+    /* Grid Layout */
+    .display-grid {
+        display: grid;
+        grid-template-columns: 68% 28%;
+        gap: 20px;
+    }
 
-/* Icon Size */
-.icon-size {
-    font-size: 18px;
-}
+    .dsp-title {
+        margin-top: 40px;
+    }
 
-/* Header Icons */
-.header-icons {
-    gap: 30px;
-}
+    /* Icon Size */
+    .icon-size {
+        font-size: 18px;
+    }
 
-.header-icons p {
-    padding-left: 20px;
-}
+    /* Header Icons */
+    .header-icons {
+        gap: 30px;
+    }
 
-/* Row and Column Layout */
-.row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px; /* Adjust as needed for spacing between items */
-}
+    .header-icons p {
+        padding-left: 20px;
+    }
 
-.column {
-    flex: 1 1 calc(25% - 500px); /* Each column takes up one-fourth of the row, minus some margin */
-}
+    /* Row and Column Layout */
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        /* Adjust as needed for spacing between items */
+    }
 
-/* Content Icon Margin */
-.contents i {
-    margin-right: 10px;
-}
+    .column {
+        flex: 1 1 calc(25% - 500px);
+        /* Each column takes up one-fourth of the row, minus some margin */
+    }
 
-/* Image Container Styling */
-.img-container {
-    display: flex;
-    overflow-x: auto;
-    white-space: nowrap;
-    padding: 10px;
-}
+    /* Content Icon Margin */
+    .contents i {
+        margin-right: 10px;
+    }
 
-.img-container img {
-    margin-right: 10px; /* Adds space between images */
-    height: 100px; /* Set a height for the images */
-}
+    /* Image Container Styling */
+    .img-container {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 10px;
+    }
 
-.status-box {
-    width: 25px;
-    height: 25px;
-}
+    .img-container img {
+        margin-right: 10px;
+        /* Adds space between images */
+        height: 100px;
+        /* Set a height for the images */
+    }
 
-.booked-color { background: #4FAF00 }
-.pending-color { background: #DF9A00 }
-.external-color { background: #0085BA }
-.blocked-color { background: #1D2327 }
+    .status-box {
+        width: 25px;
+        height: 25px;
+    }
 
-.display-col {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: 20px
-}
+    .booked-color {
+        background: #4FAF00
+    }
 
-.form-box {
-    justify-content: space-between;
-    background: #fff;
-    border: 1px solid #c3c4c7;
-    border-left-width: 4px;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
-    margin: 5px 15px 16px;
-    padding: 1px 12px;
-}
+    .pending-color {
+        background: #DF9A00
+    }
 
-.dis-gap {
-    gap: 50px
-}
+    .external-color {
+        background: #0085BA
+    }
 
-.btn-search {
-    width: 80px;
-    height: 20px;
-    text-align: center;
-}
+    .blocked-color {
+        background: #1D2327
+    }
 
-th, td {
-    border: 0.5px solid #F0F0F1;
-    background-color: #fff;;
-}
-.cal-days {
-    font-size: 10px;
-}
-.cal-days p {
-    margin: 0px !important;
-}
-.cal-days #year, .cal-days #week {
-    font-weight: 500;
-    font-size: 16px;
-    opacity: 60%;
-}
+    .display-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 20px
+    }
 
-.cal-days #day, .cal-days #month { 
-    opacity: 90%;
-    font-weight: 700;
-}
+    .form-box {
+        justify-content: space-between;
+        background: #fff;
+        border: 1px solid #c3c4c7;
+        border-left-width: 4px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, .04);
+        margin: 5px 15px 16px;
+        padding: 1px 12px;
+    }
 
-.cal-days #week {
-    font-size: 12px;
-}
+    .dis-gap {
+        gap: 50px
+    }
 
-.day-mark {
-    width: 20px;
-    height: 20px;
-}
+    .btn-search {
+        width: 80px;
+        height: 20px;
+        text-align: center;
+    }
 
-.table-wrapper {
-    overflow-x: auto;
-    width: 100%;
-}
+    th,
+    td {
+        border: 0.5px solid #F0F0F1;
+        background-color: #fff;
+        ;
+    }
 
-.acm-size {
-    text-align: center;
-    font-size: 17px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-}
+    .cal-days {
+        font-size: 10px;
+    }
 
-.form-table th { text-align: center !important; }
+    .cal-days p {
+        margin: 0px !important;
+    }
 
-.loader-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 76vh;
-}
+    .cal-days #year,
+    .cal-days #week {
+        font-weight: 500;
+        font-size: 16px;
+        opacity: 60%;
+    }
 
-.loader {
-  display: flex;
-  justify-content: space-between;
-  width: 80px;
-}
+    .cal-days #day,
+    .cal-days #month {
+        opacity: 90%;
+        font-weight: 700;
+    }
 
-.loader div {
-  width: 16px;
-  height: 16px;
-  background-color: #FF5C35;
-  border-radius: 50%;
-  animation: grow-shrink 1.5s infinite;
-}
+    .cal-days #week {
+        font-size: 12px;
+    }
 
-.loader div:nth-child(1) {
-  animation-delay: 0s;
-}
+    .day-mark {
+        width: 20px;
+        height: 20px;
+    }
 
-.loader div:nth-child(2) {
-  animation-delay: 0.3s;
-}
+    .table-wrapper {
+        overflow-x: auto;
+        width: 100%;
+    }
 
-.loader div:nth-child(3) {
-  animation-delay: 0.6s;
-}
+    .acm-size {
+        text-align: center;
+        font-size: 17px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+    }
 
-@keyframes grow-shrink {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.5);
-  }
-}
+    .form-table th {
+        text-align: center !important;
+    }
 
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
-  
-  /* Modal Content */
-  .modal-content {
-    position: relative;
-    background-color: #fefefe;
-    margin: auto;
-    padding: 0;
-    border: 1px solid #888;
-    width: 80%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s
-  }
-  
-  /* Add Animation */
-  @-webkit-keyframes animatetop {
-    from {top:-300px; opacity:0} 
-    to {top:0; opacity:1}
-  }
-  
-  @keyframes animatetop {
-    from {top:-300px; opacity:0}
-    to {top:0; opacity:1}
-  }
-  
-  /* The Close Button */
-  .close {
-    color: white;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-  }
-  
-  .modal-header {
-    padding: 2px 16px;
-    background-color: #5cb85c;
-    color: white;
-  }
-  
-  .modal-body {padding: 2px 16px;}
-  
-  .modal-footer {
-    padding: 2px 16px;
-    background-color: #5cb85c;
-    color: white;
-  }
+    .loader-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 76vh;
+    }
+
+    .loader {
+        display: flex;
+        justify-content: space-between;
+        width: 80px;
+    }
+
+    .loader div {
+        width: 16px;
+        height: 16px;
+        background-color: #FF5C35;
+        border-radius: 50%;
+        animation: grow-shrink 1.5s infinite;
+    }
+
+    .loader div:nth-child(1) {
+        animation-delay: 0s;
+    }
+
+    .loader div:nth-child(2) {
+        animation-delay: 0.3s;
+    }
+
+    .loader div:nth-child(3) {
+        animation-delay: 0.6s;
+    }
+
+    @keyframes grow-shrink {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.5);
+        }
+    }
+
+    .modal {
+        display: none;
+        /* Hidden by default */
+        position: fixed;
+        /* Stay in place */
+        z-index: 1;
+        /* Sit on top */
+        padding-top: 100px;
+        /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%;
+        /* Full width */
+        height: 100%;
+        /* Full height */
+        overflow: auto;
+        /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0);
+        /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4);
+        /* Black w/ opacity */
+    }
+
+    /* Modal Content */
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 80%;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s
+    }
+
+    /* Add Animation */
+    @-webkit-keyframes animatetop {
+        from {
+            top: -300px;
+            opacity: 0
+        }
+
+        to {
+            top: 0;
+            opacity: 1
+        }
+    }
+
+    @keyframes animatetop {
+        from {
+            top: -300px;
+            opacity: 0
+        }
+
+        to {
+            top: 0;
+            opacity: 1
+        }
+    }
+
+    /* The Close Button */
+    .close {
+        color: white;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal-header {
+        padding: 2px 16px;
+        background-color: #5cb85c;
+        color: white;
+    }
+
+    .modal-body {
+        padding: 2px 16px;
+    }
+
+    .modal-footer {
+        padding: 2px 16px;
+        background-color: #5cb85c;
+        color: white;
+    }
+
+    .btn-container {
+        padding: 8px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: large;
+        margin: 2rem 10rem -1rem;
+        background-color: #bfb8b8;
+        cursor: pointer;
+    }
 </style>
+
 <body>
-    
-<?php
+    <button class="btn-container" id='btn_back'>Back</button>
+    <script>
+        var backward = document.getElementById('btn_back');
+        backward.addEventListener('click', function(e) {
+            e.preventDefault();
+            var homeurl = '<?php echo home_url(); ?>';
+            window.location.href = homeurl;
+        })
+    </script>
+    <?php
     echo do_shortcode('[get_detail_list]');
-    get_footer(); 
-?>
+    get_footer();
+    ?>
 </body>
+
 </html>

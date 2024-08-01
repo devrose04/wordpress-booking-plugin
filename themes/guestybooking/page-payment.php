@@ -1,4 +1,43 @@
-<?php get_header(); ?>
+    <?php
+    get_header();
+    require 'vendor/autoload.php'; // Path to Stripe PHP library
+
+    $stripe_key = 'sk_test_51PhpdsKXUqLENGZVLwVQcdxhnuFsiiWTN6D9b9CtG8caokIgjJZDAnmp0Tv5SrAG8chsDc08Ge8woWle2B5nSeJe00HDrWsITe';
+    \Stripe\Stripe::setApiKey($stripe_key); // Replace with your Stripe secret key
+
+    // Replace '%20' with a space for clarity
+    $amountString = isset($_GET['amount']) ? $_GET['amount'] : null;
+    if (isset($_GET['amount'])) {
+        $amountString = str_replace('%20', ' ', $amountString);
+
+        // Split the string by the space
+        $parts = explode(' ', $amountString);
+
+        // Assigning parts to variables
+        $amount = $parts[0];
+        $currency = $parts[1];
+    }
+
+    $message = '';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $token = $_POST['stripeToken'];
+        $stripe = new \Stripe\StripeClient($stripe_key);
+        try {
+            $charge = $stripe->charges->create([
+                'amount' => $amount,
+                'currency' => $currency,
+                'source' => $token,
+                'description' => 'Example charge',
+            ]);
+
+            // Payment successful
+            $message = 'Payment successful!';
+        } catch (\Stripe\Exception\CardException $e) {
+            // Payment failed
+            $message = 'Payment failed: ' . $e->getError()->message;
+        }
+    }
+    ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,12 +49,19 @@
 </head>
 
 <style>
-    /* style.css */
     body {
         font-family: Arial, sans-serif;
-        margin: 0;
+        margin: 200px;
         padding: 0;
         background-color: #f7f7f7;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
     h2 {
@@ -23,273 +69,195 @@
         margin-bottom: 10px;
     }
 
-    .container {
-        padding: 5rem 16rem;
-    }
-
-    .display-flex {
-        display: flex;
-        justify-content: space-between;
+    .form-group {
         margin-bottom: 20px;
     }
 
-    .display-flex>div {
-        flex: 1;
-        margin-right: 10px;
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
     }
 
-    .display-flex>div:last-child {
-        margin-right: 0;
-    }
-
-    div>div {
-        margin-bottom: 15px;
-    }
-
-    p {
-        margin: 5px 0;
-    }
-
-    input,
-    input[type="date"] {
+    .form-group input {
         width: 100%;
         padding: 10px;
-        margin-top: 5px;
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
         font-size: 1em;
     }
 
-    input::placeholder {
-        color: #aaa;
+    .form-group input:focus {
+        outline: 1px solid #007bff;
     }
 
-    input:focus {
-        outline: 1px solid grey;
+    .form-group #card-element {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
     }
 
-    @media (max-width: 768px) {
-        .display-flex {
-            flex-direction: column;
-        }
-
-        .display-flex>div {
-            margin-right: 0;
-        }
+    .form-group .error {
+        color: red;
+        margin-top: 5px;
     }
 
-    button {
-        padding: 8px 24px;
+    .btn {
+        display: inline-block;
+        padding: 10px 20px;
         border: none;
-        border-radius: 8px;
-        font-size: large;
-    }
-
-    .paid {
-        background-color: #5CB85C;
-        color: white;
-    }
-
-    .canceled {
-        background-color: red !important;
-    }
-
-    .paid:hover {
+        border-radius: 4px;
+        background-color: #007bff;
+        color: #fff;
+        font-size: 1em;
         cursor: pointer;
-        background-color: #3d8b3d !important;
     }
 
-    .canceled:hover {
-        cursor: pointer;
-        background-color: darkred !important;
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        margin-right: 10px;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    .message {
+        display: inline-block;
+        margin-left: 20px;
+        font-size: 1em;
+    }
+
+    .success {
+        color: green;
+    }
+
+    .error {
+        color: red;
     }
 </style>
-<?php
-$firstName  = isset($_POST['firstName']) ? $_POST['firstName'] : "";
-$lastName   = isset($_POST['lastName']) ? $_POST['lastName'] : "";
-$creditCard = isset($_POST['creditCard']) ? $_POST['creditCard'] : "";
-$expiration = isset($_POST['expiration']) ? $_POST['expiration'] : "";
-$cvc        = isset($_POST['cvc']) ? $_POST['cvc'] : "";
-$street     = isset($_POST['street']) ? $_POST['street'] : "";
-$city       = isset($_POST['city']) ? $_POST['city'] : "";
-$country    = isset($_POST['country']) ? $_POST['country'] : "";
-$state      = isset($_POST['state']) ? $_POST['state'] : "";
-$zipcode    = isset($_POST['zipcode']) ? $_POST['zipcode'] : "";
-?>
 
 <body>
-    <form method="post" class="container" id="submit-payment" style="margin-bottom: 4rem;">
-        <div>
-            <h2>Card holder name</h2>
-            <div class="display-flex">
-                <div>
-                    <p>First Name</p>
-                    <input required type="text" placeholder="First name" name="firstName" id="firstName" value="<?php echo esc_attr($firstName); ?>">
-                </div>
-                <div>
-                    <p>Last Name</p>
-                    <input required type="text" placeholder="Last name" name="lastName" id="lastName" value="<?php echo esc_attr($lastName); ?>">
-                </div>
+    <div class="container">
+        <h2>Payment Details</h2>
+        <form id="payment-form" method="post">
+            <div class="form-group">
+                <label for="cardholder-name">Cardholder Name</label>
+                <input type="text" id="cardholder-name" name="cardholder-name" required>
             </div>
-        </div>
-        <div>
-            <h2>Payment details</h2>
-            <div class="display-flex">
-                <div>
-                    <p>Credit card number</p>
-                    <input required type="text" placeholder="****-****-****-****" name="creditCard" id="creditCard" value="<?php echo esc_attr($creditCard); ?>" oninput="formatCreditCard(this)">
+            <div class="form-group">
+                <label for="card-element">Credit or Debit Card</label>
+                <div id="card-element">
+                    <!-- A Stripe Element will be inserted here. -->
                 </div>
-                <div class="display-flex">
-                    <div>
-                        <p>Expiration date</p>
-                        <input required type="date" placeholder="MM/YY" name="expiration" id="expiration" value="<?php echo esc_attr($expiration); ?>">
-                    </div>
-                    <div>
-                        <p>CVC</p>
-                        <input required type="text" placeholder="CVC" name="cvc" id="cvc" value="<?php echo esc_attr($cvc); ?>">
-                    </div>
-                </div>
+                <!-- Used to display form errors. -->
+                <div id="card-errors" role="alert" class="error"></div>
             </div>
-        </div>
-        <div>
-            <h2>Billing address</h2>
-            <div class="display-flex">
-                <div>
-                    <p>Street</p>
-                    <input required type="text" placeholder="Street" name="street" id="street" value="<?php echo esc_attr($street); ?>">
-                </div>
-                <div>
-                    <p>City</p>
-                    <input required type="text" placeholder="City" name="city" id="city" value="<?php echo esc_attr($city); ?>">
-                </div>
-            </div>
-            <div class="display-flex">
-                <div>
-                    <p>Country</p>
-                    <input required type="text" placeholder="Country" name="country" id="country" value="<?php echo esc_attr($country); ?>">
-                </div>
-                <div>
-                    <p>State</p>
-                    <input required type="text" placeholder="State" name="state" id="state" value="<?php echo esc_attr($state); ?>">
-                </div>
-                <div>
-                    <p>Zip code</p>
-                    <input required type="text" placeholder="Zip code" name="zipcode" id="zipcode" value="<?php echo esc_attr($zipcode); ?>">
-                </div>
-            </div>
-        </div>
-        <div>
-            <button type="submit" class="paid">Pay Now</button>
-            <button class="canceled">Go to Back</button>
-        </div>
-    </form>
-    <input type="hidden" id="provider" value="<?php echo $paymentProviderId; ?>">
-    <div id="guesty-tokenization-container"></div>
-    <?php
-    $price = isset($_GET['amount']) ? $_GET['amount'] : null;
-    $listingId = isset($_GET['listingid']) ? $_GET['listingid'] : null;
+            <button type="submit" id="pay-submit" class="btn">Pay Now</button>
+            <button type="button" class="btn btn-secondary" id="btn_back">Back</button>
+            <span id="payment-message" class="message <?php if(strpos($message, "success")) echo "success"; else echo "error"; ?>">
+                <?php echo $message; ?>
+            </span>
+        </form>
+    </div>
 
-    if (preg_match('/^(\d+)\s*(\w+)$/', $price, $matches)) {
-        $amount = $matches[1];   // The numeric part
-        $currency = $matches[2]; // The alphabetic part
-    }
+    <script src="https://js.stripe.com/v3/"></script>
 
-    $payment = new Guesty_API();
-    $paymentProviderId = $payment->pay_provider($listingId)["providerAccountId"];
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $exp = new DateTime($_POST['expiration']);
-        $number = preg_replace('/\D/', '', $_POST['creditCard']);
-        $exp_month = $exp->format('m');
-        $exp_year = $exp->format('Y');
-        $cvc = $_POST['cvc'];
-        $card = array(
-            'number' => $number,
-            'exp_month' => $exp_month,
-            'exp_year' => $exp_year,
-            'cvc' => $cvc
-        );
+    <script>
+        var publicKey = 'pk_test_51PhpdsKXUqLENGZVsIfi9Kvei6ebJZJfVMXysrLQJAO0QrByAkGYllrARbGO3LmAs25HeCrEYG9ZsoWzBPpVgIOO00UGcdfA3F';
 
-        $name =  $_POST['firstName'] . " " . $_POST['lastName'];
-        $city = $_POST['city'];
-        $country = $_POST['country'];
-        $line1 = $_POST['street'];
-        $postal_code = $_POST['zipcode'];
-        $billing_details = array(
-            'name' => $name,
-            'address' => array(
-                'city' => $city,
-                'country' => $country,
-                'line1' => $line1,
-                'postal_code' => $postal_code
-            )
-        );
+        var stripe = Stripe(publicKey);
+        var elements = stripe.elements();
 
-        $threeDS = array(
-            'amount' => $amount,
-            'currency' => $currency
-        );
-        $guestyPay = new Guesty_API();
-        $paid = $guestyPay->payment_provider($listingId, $card, $billing_details, $threeDS);
-        var_dump($paid);
-    }
-    ?>
+        var style = {
+            base: {
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+
+        var card = elements.create('card', {
+            style: style
+        });
+        card.mount('#card-element');
+
+        card.on('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            stripe.createToken(card).then(function(result) {
+                if (result.error) {
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    stripeTokenHandler(result.token);
+                }
+            });
+        });
+
+        function stripeTokenHandler(token) {
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+
+            // Add a hidden input for storing the redirect message
+            var messageInput = document.createElement('input');
+            messageInput.setAttribute('type', 'hidden');
+            messageInput.setAttribute('name', 'paymentMessage');
+            form.appendChild(messageInput);
+
+            // Submit the form
+            form.submit();
+        }
+
+        // After form submission, handle the response
+        document.addEventListener('DOMContentLoaded', function() {
+            var paymentMessage = document.getElementById('payment-message').textContent;
+            if (paymentMessage.trim() !== "") {
+
+                setTimeout(function() {
+                    window.location.href = '<?php echo home_url(); ?>';
+                }, 3000);
+            }
+        });
+
+
+        var backward = document.getElementById('btn_back');
+        backward.addEventListener('click', function(e) {
+            e.preventDefault();
+            var homeurl = '<?php echo home_url(); ?>';
+            window.location.href = homeurl;
+        });
+    </script>
+
+
 </body>
-
-<?php get_footer(); ?>
 
 </html>
 
-<script type="module">
-    import {
-        loadScript
-    } from "@guestyorg/tokenization-js";
 
-    document.addEventListener("DOMContentLoaded", async function() {
-        const containerId = "guesty-tokenization-container";
-        const providerId = document.getElementById("provider").value; // Replace with your actual provider ID
-        alert(providerId);
-
-        try {
-            // Load the Guesty Tokenization SDK
-            const guestyTokenization = await loadScript();
-            console.log("Guesty Tokenization JS SDK is loaded and ready to use");
-
-            // Render the tokenization form
-            await guestyTokenization.render({
-                containerId: containerId,
-                providerId: providerId,
-            });
-            console.log("Guesty Tokenization form rendered successfully");
-
-            // Handle form submission
-            document
-                .getElementById("pay-now")
-                .addEventListener("click", async function() {
-                    try {
-                        const paymentMethod = await guestyTokenization.submit();
-                        console.log("Payment method received:", paymentMethod);
-                        // Process payment method via Guesty's API
-                    } catch (e) {
-                        console.error("Failed to submit the Guesty Tokenization form", e);
-                    }
-                });
-        } catch (error) {
-            console.error(
-                "Failed to load the Guesty Tokenization JS SDK script",
-                error
-            );
-        }
-    });
-
-    function formatCreditCard(input) {
-        const value = input.value.replace(/\D/g, ''); // Remove all non-digit characters
-        const formattedValue = value.match(/.{1,4}/g)?.join('-') ?? value; // Group digits in sets of 4
-        input.value = formattedValue;
-    }
-
-    function removeHyphens(value) {
-        // Remove all hyphens
-        return value.replace(/-/g, '');
-    }
-</script>

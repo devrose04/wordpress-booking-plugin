@@ -31,31 +31,6 @@ function guesty_scripts() {
 }
 add_action('wp_enqueue_scripts', 'guesty_scripts');
 
-function enqueue_custom_payment_scripts() {
-    // Enqueue the bundled custom JavaScript file
-    wp_enqueue_script(
-        'custom-payment-script',
-        get_template_directory_uri() . '/assets/js/guesty-payment.bundle.js',
-        array(), // Dependencies (add dependencies if needed)
-        null, // Version number
-        true // Load in footer
-    );
-}
-add_action('wp_enqueue_scripts', 'enqueue_custom_payment_scripts');
-
-// functions.php
-
-function enqueue_guesty_scripts() {
-    wp_enqueue_script(
-        'guesty-tokenization-js',
-        'https://pay.guesty.com/tokenization/v1/init.js',
-        array(),
-        null,
-        true
-    );
-}
-add_action('wp_enqueue_scripts', 'enqueue_guesty_scripts');
-
 ?>
 
 
