@@ -1,4 +1,12 @@
-<?php get_header(); ?>
+<!DOCTYPE html>
+<html <?php language_attributes(); ?>>
+
+<head>
+    <meta charset="<?php bloginfo('charset'); ?>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php wp_head(); ?>
+</head>
+
 <body <?php body_class(); ?>>
     <header>
         <nav class="main-banner">
@@ -30,5 +38,14 @@
         // Output the quote form using the shortcode
         echo do_shortcode('[guesty_reservation_quote]');
         ?>
-<?php get_footer(); ?>
 </main>
+
+<footer>
+    <p style="text-align: center; padding-top: 42px; padding-bottom: 16px; background-color: #ddbd87;">&copy; 
+        <?php echo date('Y'); ?> 
+        Booking dre@m. All rights reserved.
+    </p>
+</footer>
+</body>
+
+</html>
