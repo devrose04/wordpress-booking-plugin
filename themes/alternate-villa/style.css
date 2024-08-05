@@ -1,0 +1,14 @@
+/**
+Theme Name: Alternate Villa
+Author: Gwacamol
+Author URI: https://gwacamol.sg
+Description: Custom theme for Alternate Villa compatible with Astra and Elementor
+Version: 1.0.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: alternate-villa
+Template: astra
+*/
+
+body p:last-child {margin-bottom:0;}
+.gform_required_legend {display:none !important;}
